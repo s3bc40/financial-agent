@@ -7,10 +7,14 @@ from .tools import get_financial_summary, recommend_cost_cut
 
 load_dotenv()
 
+AGENT_NAME = "root_agent"
+APP_NAME = "agents"
+GEMINI_MODEL = "gemini-2.5-flash"
+
 # --- Define the Agent ---
 root_agent = Agent(
-    name="root_agent",
-    model="gemini-2.5-flash",
+    name=AGENT_NAME,
+    model=GEMINI_MODEL,
     description="An agent that provides financial analysis and cost-cutting recommendations.",
     instruction="""
     You are FinancialAgent, an expert in financial analysis and cost management.
@@ -31,4 +35,8 @@ session_service = InMemorySessionService()
 
 # Get a configured runner instance (for FastAPI)
 def get_adk_runner() -> Runner:
-    return Runner(agent=root_agent, session_service=session_service)
+    return Runner(agent=root_agent, app_name=APP_NAME, session_service=session_service)
+
+
+def get_session_service() -> InMemorySessionService:
+    return session_service
