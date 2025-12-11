@@ -9,5 +9,6 @@ dependencies = [
     "google-adk>=1.18.0",
     "pytest>=9.0.2",
     "python-dotenv>=1.2.1",
+    "streamlit>=1.52.1",
     "uvicorn>=0.38.0",
 ]

@@ -1,4 +1,4 @@
-# 🤖 Financial Report Insight Agent (WIP)
+# 🤖 Financial Report Insight Agent
 
 ## 📊 Project Overview
 
@@ -41,6 +41,7 @@ This project deliberately uses a decoupled, Python-centric microservice architec
 │   ├── financial_agent
 │   │   ├── agent.py
 │   │   ├── __init__.py
+│   │   ├── mock_data.py
 │   │   └── tools.py
 │   ├── __init__.py
 ├── api
@@ -53,6 +54,7 @@ This project deliberately uses a decoupled, Python-centric microservice architec
 │   ├── __init__.py
 │   └── test_financial_agent_tools.py
 ├── ui
+│   └── app.py
 └── uv.lock
 ```
 
@@ -63,17 +65,19 @@ The agent's success is proven by its ability to execute complex, conditional log
 - **Tools Validation (✅ Passed):** Unit tests confirmed reliable data from mock tools.
 - **ADK Logic Validation (✅ Passed):** The ADK Web UI Trace confirmed a successful 4-step chain: **Data Fetch (2x) → Calculate/Reason → Conditional Action (Skip or Call)**.
 
-## 💻 Get Started Locally
+## 💻 Get Started Locally (Run the Full Stack)
 
-### Prerequisites
+**Prerequisites**
 
-1.  Python 3.10+
-2.  Your Gemini API Key (set as `GOOGLE_API_KEY` in your `agents/financial_agent/.env` file).
+1. Python 3.10+
+2. Your Gemini API Key (set as GEMINI_API_KEY in a file named .env in the project root).
+3. The uv package manager.
 
 ### Setup
 
 ```bash
 # Clone the repository
+
 git clone https://github.com/s3bc40/financial-agent.git
 cd financial-agent
 
@@ -92,3 +96,43 @@ cd agents
 # Run the ADK web UI to interact and see the trace
 uv run adk web
 ```
+
+### Running the End-to-End Application
+
+You will need **two terminal** windows open:
+
+#### Terminal 1: Start the FastAPI Backend (API Service)
+
+The agent logic runs here and is exposed on port 8000.
+
+```bash
+uv run uvicorn main:app --reload
+```
+
+#### Terminal 2: Start the Streamlit Frontend (UI)
+
+This starts the chat interface, which connects to the backend API.
+
+```bash
+uv run streamlit ui/app.py
+```
+
+#### Final Validation Test
+
+1. Open your browser to the Streamlit URL (usually http://localhost:8501).
+
+2. Enter the test prompts step by step:
+
+```
+Compare the Operating Margin for Q4-2024 versus Q4-2025. Which year performed better, and what cost-cut action should we take now?
+
+How did our performance in the first half of 2025 (Q1-2025 and Q2-2025) compare to the disastrous second half of 2024 (Q3-2024 and Q4-2024)?
+
+Compare Q2-2025 and Q3-2025 profitability for me.
+
+Analyze the financial results for Q4-2024 in detail, including the Gross Margin and Operating Margin.
+
+Do we have the final numbers for Q1-2026 yet?
+```
+
+The agent will execute its full chain of reasoning, use its tools, and return the final, detailed recommendation.

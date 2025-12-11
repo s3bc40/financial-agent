@@ -1,3 +1,6 @@
+from agents.financial_agent.mock_data import DATA_ERROR_MESSAGES, FINANCIAL_DATA
+
+
 def get_financial_summary(quarter: str) -> dict:
     """
     Retrieve the financial summary for a given quarter,
@@ -10,16 +13,20 @@ def get_financial_summary(quarter: str) -> dict:
     Returns:
         dict: A dictionary with financial data and error handling.
     """
-    # Mock data for demonstration purposes
-    data = {
-        "Q1-2025": {"Revenue": 150000, "COGS": 90000, "OPEX": 40000},
-        "Q2-2025": {"Revenue": 180000, "COGS": 110000, "OPEX": 45000},
-        "Q3-2025": {"Revenue": 200000, "COGS": 120000, "OPEX": 50000},
-        "Q4-2025": {"Revenue": 220000, "COGS": 130000, "OPEX": 55000},
-    }
-    return data.get(
+    # Handle the specific missing quarter
+    if quarter == "Q3-2025":
+        return {"error": DATA_ERROR_MESSAGES["missing"]}
+
+    # Handle future quarters (general error)
+    if quarter in ["Q1-2026", "Q2-2026"]:
+        return {"error": DATA_ERROR_MESSAGES["future"].format(quarter=quarter)}
+
+    # Retrieve data from the imported dictionary
+    return FINANCIAL_DATA.get(
         quarter,
-        {"error": f"Data not available for {quarter}. Try 'Q1-2025' to 'Q4-2025'."},
+        {
+            "error": f"Data not available for {quarter}. Try a quarter between 'Q1-2024' and 'Q4-2025'."
+        },
     )
 
 
